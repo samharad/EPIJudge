@@ -8,9 +8,35 @@ from test_framework.test_utils import enable_executor_hook
 RED, WHITE, BLUE = range(3)
 
 
-def dutch_flag_partition(pivot_index: int, A: List[int]) -> None:
-    # TODO - you fill in here.
-    return
+# def bubble_out(pivot: int, A: List[int], i: int) -> None:
+#     dir = 1 if A[i] > pivot else -1
+#     while 0 <= i + dir < len(A) and A[i + dir] == pivot:
+#         swap = A[i]
+#         A[i] = A[i + dir]
+#         A[i + dir] = swap
+#         i += dir
+#     return
+
+def helper(pivot: int, A: List[int]):
+    i = 0
+    for j in range(len(A)):
+        if A[j] <= pivot:
+            swap = A[j]
+            A[j] = A[i]
+            A[i] = swap
+            i += 1
+    return i
+
+
+def dutch_flag_partition(pivot_index: int, A: List[int]) -> List[int]:
+    pivot = A[pivot_index]
+    helper(pivot, A)
+    helper(pivot - 1, A)
+    return A
+
+
+def test_dutch_flag_partition():
+    assert dutch_flag_partition(0, [1, 2, 3, 1]) == [1, 1, 2, 3]
 
 
 @enable_executor_hook

@@ -3,13 +3,28 @@ from test_framework.test_failure import TestFailure
 
 
 def int_to_string(x: int) -> str:
-    # TODO - you fill in here.
-    return '0'
+    if x < 0:
+        return "-" + int_to_string(-x)
+    if x == 0:
+        return "0"
+    acc = ""
+    while x:
+        dig = x % 10
+        acc += str(dig)
+        x //= 10
+    return acc[::-1]
 
 
 def string_to_int(s: str) -> int:
-    # TODO - you fill in here.
-    return 0
+    if s[0] == "+":
+        return string_to_int(s[1:])
+    if s[0] == "-":
+        return 0 - string_to_int(s[1:])
+    acc = 0
+    for c in s:
+        acc *= 10
+        acc += int(c)
+    return acc
 
 
 def wrapper(x, s):
