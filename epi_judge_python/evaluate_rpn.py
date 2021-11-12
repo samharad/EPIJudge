@@ -1,12 +1,29 @@
+import collections
+
 from test_framework import generic_test
+
+operators = {"+": lambda a, b: a + b,
+             "-": lambda a, b: a - b,
+             "*": lambda a, b: a * b,
+             "/": lambda a, b: a // b}
 
 
 def evaluate(expression: str) -> int:
-    # TODO - you fill in here.
-    return 0
+    words = expression.split(",")
+
+    stack = collections.deque()
+    for word in words:
+        operator = operators.get(word, None)
+        if operator:
+            b = int(stack.pop())
+            a = int(stack.pop())
+            res = operator(a, b)
+            stack.append(res)
+        else:
+            stack.append(word)
+    return int(stack[0])
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('evaluate_rpn.py', 'evaluate_rpn.tsv',
-                                       evaluate))
+    generic_test.generic_test_main('evaluate_rpn.py', 'evaluate_rpn.tsv',
+                                   evaluate)
