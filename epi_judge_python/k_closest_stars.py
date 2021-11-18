@@ -1,4 +1,6 @@
 import functools
+import heapq
+import itertools
 import math
 from typing import Iterator, List
 
@@ -27,9 +29,35 @@ class Star:
         return math.isclose(self.distance, rhs.distance)
 
 
+class StarWrapper:
+    star: Star
+
+    def __init__(self, star: Star):
+        self.star = star
+
+    def __lt__(self, other):
+        return self.star.distance > other.star.distance
+
+
 def find_closest_k_stars(stars: Iterator[Star], k: int) -> List[Star]:
-    # TODO - you fill in here.
-    return []
+    def unwrap(wrappers: List[StarWrapper]) -> List[Star]:
+        return [w.star for w in wrappers]
+    elt = next(stars, None)
+    heap = []
+    for _ in range(k):
+        if not elt:
+            return unwrap(heap)
+        heap.append(StarWrapper(elt))
+        elt = next(stars, None)
+    heapq.heapify(heap)
+
+    while elt:
+        heapq.heappushpop(heap, StarWrapper(elt))
+        elt = next(stars, None)
+    return unwrap(heap)
+
+
+find_closest_k_stars(iter([Star(1, 1, 1), Star(0, 0, 0)]), 1)
 
 
 def comp(expected_output, output):
@@ -48,7 +76,6 @@ def find_closest_k_stars_wrapper(executor, stars, k):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('k_closest_stars.py',
-                                       'k_closest_stars.tsv',
-                                       find_closest_k_stars_wrapper, comp))
+    generic_test.generic_test_main('k_closest_stars.py',
+                                   'k_closest_stars.tsv',
+                                   find_closest_k_stars_wrapper, comp)
